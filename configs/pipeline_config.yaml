@@ -1,0 +1,41 @@
+# Pipeline Configuration for NeMo Speech Alignment & Text Normalization
+
+audio:
+  sample_rate: 16000
+  mono: true
+  max_duration_sec: 30.0
+  min_duration_sec: 0.5
+  supported_formats: [".wav", ".flac", ".mp3", ".ogg"]
+
+text_normalization:
+  expand_numbers: true
+  expand_abbreviations: true
+  expand_dates: true
+  expand_currency: true
+  expand_time: true
+  expand_measures: true
+  lowercase: true
+  remove_punctuation: false
+  language: "en"
+
+forced_alignment:
+  model_name: "stt_en_conformer_ctc_large"
+  batch_size: 8
+  window_size_sec: 30.0
+  overlap_sec: 5.0
+  use_gpu: false  # Set true if CUDA available
+
+quality_validation:
+  wer_threshold: 0.30
+  cer_threshold: 0.15
+  min_confidence: 0.60
+  min_words_per_segment: 2
+  max_silence_ratio: 0.80
+  flag_low_quality: true
+  generate_report: true
+
+output:
+  manifest_format: "nemo"  # "nemo" or "kaldi"
+  save_segments: true
+  save_spectrograms: false
+  report_format: "json"  # "json" or "csv"
