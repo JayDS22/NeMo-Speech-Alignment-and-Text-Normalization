@@ -19,43 +19,14 @@ This project builds a complete speech data normalization and alignment toolkit f
 
 ## Architecture
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                    Input Layer                           │
-│  Audio Files (.wav/.flac)  +  Raw Transcripts (.txt)    │
-└──────────────┬──────────────────────┬───────────────────┘
-               │                      │
-               ▼                      ▼
-┌──────────────────────┐  ┌──────────────────────────────┐
-│  Audio Preprocessor  │  │   Text Normalizer (TN/ITN)   │
-│  - Resampling (16kHz)│  │   - Number expansion         │
-│  - VAD segmentation  │  │   - Abbreviation expansion   │
-│  - Noise detection   │  │   - Date/time formatting     │
-│  - Mel-spectrogram   │  │   - Currency/measure convert  │
-└──────────┬───────────┘  └──────────────┬───────────────┘
-           │                             │
-           └──────────┬──────────────────┘
-                      ▼
-        ┌───────────────────────────┐
-        │   Forced Aligner (CTC)    │
-        │   - Word-level timestamps │
-        │   - Confidence scores     │
-        │   - Segment boundaries    │
-        └─────────────┬─────────────┘
-                      ▼
-        ┌───────────────────────────┐
-        │   Quality Validator       │
-        │   - WER/CER computation   │
-        │   - Confidence filtering  │
-        │   - Alignment QA report   │
-        └─────────────┬─────────────┘
-                      ▼
-        ┌───────────────────────────┐
-        │   Output: ASR-Ready Data  │
-        │   - Aligned manifests     │
-        │   - Segment-level audio   │
-        │   - Quality reports       │
-        └───────────────────────────┘
+```mermaid
+flowchart TD
+    IN[Input Layer<br/>Audio Files .wav/.flac + Raw Transcripts .txt] --> AP[Audio Preprocessor<br/>Resampling 16kHz<br/>VAD segmentation<br/>Noise detection<br/>Mel-spectrogram]
+    IN --> TN[Text Normalizer TN/ITN<br/>Number expansion<br/>Abbreviation expansion<br/>Date/time formatting<br/>Currency/measure convert]
+    AP --> FA[Forced Aligner CTC<br/>Word-level timestamps<br/>Confidence scores<br/>Segment boundaries]
+    TN --> FA
+    FA --> QV[Quality Validator<br/>WER/CER computation<br/>Confidence filtering<br/>Alignment QA report]
+    QV --> OUT[Output: ASR-Ready Data<br/>Aligned manifests<br/>Segment-level audio<br/>Quality reports]
 ```
 
 ## Quick Start
